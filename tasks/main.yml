@@ -1,2 +1,38 @@
 ---
-# tasks file for deploy
+- name: Fail if release is not set
+  fail:
+    msg: "No release specified"
+  when: release is undefined 
+
+- name: set release path
+  set_fact:
+    release_file_path: "{{ inventory_dir }}/../{{ release_file }}"
+
+- name: debug
+  debug: msg="{{ release_file_path }}"
+
+- name: Check for release file
+  local_action: stat path={{ release_file_path }}
+  register: release_file_stat
+  become: no
+
+- name: Fail if release File does not exist
+  fail:
+    msg: "Release File does not exist"
+  when: not release_file_stat.stat.exists
+
+- name: Initialize the deploy root and gather facts
+  deploy_helper: path='{{ deploy_path }}'
+
+- name: create new release directory
+  file: path={{ deploy_helper.new_release_path }} state=directory mode=0775 owner={{ run_user }} group={{ run_group }} recurse=true
+  become_user: root
+ 
+- name: unarchive release
+  unarchive: copy=yes src="{{ release_file_path }}" dest="{{ deploy_helper.new_release_path }}"
+
+- name: Add an unfinished file, to allow cleanup on successful finalize
+  file: path={{ deploy_helper.new_release_path }}/{{ deploy_helper.unfinished_filename }} state=touch
+
+- name: Finalize the deploy, removing the unfinished file and switching the symlink
+  deploy_helper: path='{{ deploy_path }}' release={{ deploy_helper.new_release }} state=finalize
