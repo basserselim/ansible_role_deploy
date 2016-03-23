@@ -27,7 +27,8 @@ Example Playbook
            deploy_owner: "www-data"
            deploy_group: "www-data"
            deploy_shared_folders:
-             - path: "data/uploads", src: "uploads"
+             - path: "data/uploads"
+               src: "uploads"
            # creates the direcotry /srv/app/shared/uploads if not exisiting and 
            # creates a link from /srv/app/current/data/uploads to /srv/app/shared/uploads
 

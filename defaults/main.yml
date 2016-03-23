@@ -4,4 +4,5 @@ deploy_owner: 'www-data'
 deploy_group: 'www-data'
 deploy_release_file: no
 deploy_shared_folders:
-  - path: "data/sessions", src: "sessions"
+  - path: "data/sessions"
+    src: "sessions"
