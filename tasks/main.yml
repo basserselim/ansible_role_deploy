@@ -35,13 +35,15 @@
   file: path={{ deploy_helper.new_release_path }}/{{ deploy_helper.unfinished_filename }} state=touch
 
 - name: Create some folders in the shared folder
-  file: path='{{ deploy_helper.shared_path }}/{{ item.src }}' state=directory
+  file: path='{{ deploy_helper.shared_path }}/{{ item.src }}' state=directory owner={{ run_user }} group={{ run_group }}
   with_items: "{{ shared_folders }}"
 
 - name: Add symlinks from the new release to the shared folder
   file: path='{{ deploy_helper.new_release_path }}/{{ item.path }}'
         src='{{ deploy_helper.shared_path }}/{{ item.src }}'
         state=link
+        owner={{ run_user }}
+        group={{ run_group }}
   with_items: "{{ shared_folders }}"
 
 - name: Finalize the deploy, removing the unfinished file and switching the symlink
