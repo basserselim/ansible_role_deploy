@@ -36,7 +36,7 @@
 
 - name: Create some folders in the shared folder
   file: path='{{ deploy_helper.shared_path }}/{{ item.src }}' state=directory owner={{ deploy_owner }} group={{ deploy_group }}
-  with_items: "{{ shared_folders }}"
+  with_items: "{{ deploy_shared_folders }}"
 
 - name: Add symlinks from the new release to the shared folder
   file: path='{{ deploy_helper.new_release_path }}/{{ item.path }}'
@@ -44,7 +44,7 @@
         state=link
         owner={{ deploy_owner }}
         group={{ deploy_group }}
-  with_items: "{{ shared_folders }}"
+  with_items: "{{ deploy_shared_folders }}"
 
 - name: Finalize the deploy, removing the unfinished file and switching the symlink
   deploy_helper: path='{{ deploy_path }}' release={{ deploy_helper.new_release }} state=finalize
