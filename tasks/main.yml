@@ -34,5 +34,15 @@
 - name: Add an unfinished file, to allow cleanup on successful finalize
   file: path={{ deploy_helper.new_release_path }}/{{ deploy_helper.unfinished_filename }} state=touch
 
+- name: Create some folders in the shared folder
+  file: path='{{ deploy_helper.shared_path }}/{{ item.src }}' state=directory
+  with_items: "{{ shared_folders }}"
+
+- name: Add symlinks from the new release to the shared folder
+  file: path='{{ deploy_helper.new_release_path }}/{{ item.path }}'
+        src='{{ deploy_helper.shared_path }}/{{ item.src }}'
+        state=link
+  with_items: "{{ shared_folders }}"
+
 - name: Finalize the deploy, removing the unfinished file and switching the symlink
   deploy_helper: path='{{ deploy_path }}' release={{ deploy_helper.new_release }} state=finalize

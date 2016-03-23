@@ -1,2 +1,3 @@
 ---
-# defaults file for deploy
+deploy_shared_folders:
+  - path: "data/sessions", src: "sessions"
