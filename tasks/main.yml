@@ -6,7 +6,7 @@
 
 - name: set release path
   set_fact:
-    release_file_path: "{{ inventory_dir }}/../{{ release_file }}"
+    release_file_path: "{{ inventory_dir }}/../{{ deploy_release_file }}"
 
 - name: debug
   debug: msg="{{ release_file_path }}"
@@ -25,7 +25,7 @@
   deploy_helper: path='{{ deploy_path }}'
 
 - name: create new release directory
-  file: path={{ deploy_helper.new_release_path }} state=directory mode=0775 owner={{ run_user }} group={{ run_group }} recurse=true
+  file: path={{ deploy_helper.new_release_path }} state=directory mode=0775 owner={{ deploy_owner }} group={{ deploy_group }} recurse=true
   become_user: root
  
 - name: unarchive release
@@ -35,15 +35,15 @@
   file: path={{ deploy_helper.new_release_path }}/{{ deploy_helper.unfinished_filename }} state=touch
 
 - name: Create some folders in the shared folder
-  file: path='{{ deploy_helper.shared_path }}/{{ item.src }}' state=directory owner={{ run_user }} group={{ run_group }}
+  file: path='{{ deploy_helper.shared_path }}/{{ item.src }}' state=directory owner={{ deploy_owner }} group={{ deploy_group }}
   with_items: "{{ shared_folders }}"
 
 - name: Add symlinks from the new release to the shared folder
   file: path='{{ deploy_helper.new_release_path }}/{{ item.path }}'
         src='{{ deploy_helper.shared_path }}/{{ item.src }}'
         state=link
-        owner={{ run_user }}
-        group={{ run_group }}
+        owner={{ deploy_owner }}
+        group={{ deploy_group }}
   with_items: "{{ shared_folders }}"
 
 - name: Finalize the deploy, removing the unfinished file and switching the symlink
