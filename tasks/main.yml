@@ -48,3 +48,7 @@
 
 - name: Finalize the deploy, removing the unfinished file and switching the symlink
   deploy_helper: path='{{ deploy_path }}' release={{ deploy_helper.new_release }} state=finalize
+
+- name: set directory rights
+  file: path='{{ deploy_path }}' state=directory owner={{ deploy_owner }} group={{ deploy_group }} recurse=true
+  become: true
