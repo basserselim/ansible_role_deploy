@@ -30,6 +30,10 @@
  
 - name: unarchive release
   unarchive: copy=yes src="{{ release_file_path }}" dest="{{ deploy_helper.new_release_path }}" owner={{ deploy_owner }} group={{ deploy_group }}
+  environment:
+    LANG: C
+    LC_ALL: C
+    LC_MESSAGES: C
 
 - name: Add an unfinished file, to allow cleanup on successful finalize
   file: path={{ deploy_helper.new_release_path }}/{{ deploy_helper.unfinished_filename }} state=touch owner={{ deploy_owner }} group={{ deploy_group }}
