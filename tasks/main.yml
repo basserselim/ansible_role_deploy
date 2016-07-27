@@ -29,10 +29,10 @@
   become_user: root
  
 - name: unarchive release
-  unarchive: copy=yes src="{{ release_file_path }}" dest="{{ deploy_helper.new_release_path }}"
+  unarchive: copy=yes src="{{ release_file_path }}" dest="{{ deploy_helper.new_release_path }}" owner={{ deploy_owner }} group={{ deploy_group }}
 
 - name: Add an unfinished file, to allow cleanup on successful finalize
-  file: path={{ deploy_helper.new_release_path }}/{{ deploy_helper.unfinished_filename }} state=touch
+  file: path={{ deploy_helper.new_release_path }}/{{ deploy_helper.unfinished_filename }} state=touch owner={{ deploy_owner }} group={{ deploy_group }}
 
 - name: Create some folders in the shared folder
   file: path='{{ deploy_helper.shared_path }}/{{ item.src }}' state=directory owner={{ deploy_owner }} group={{ deploy_group }}
